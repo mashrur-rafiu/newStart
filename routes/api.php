@@ -16,3 +16,18 @@ Route::delete('/posts/{id}', [PostController::class, 'destroy']);
 
 Route::post('/login',[AuthController::class, 'login']);
 Route::post('/logout',[AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::post('/forget-password',[AuthController::class, 'forgetpassword']);
+Route::get('/reset-password/{token}', function (string $token) {
+    return response()->json([
+        'token' => $token
+    ]);
+})->name('password.reset');
+
+Route::middleware(['auth:sanctum', 'check.token.expiration'])->group(function(){
+    Route::get('/profile', function(Request $request){
+        return response()->json([
+            'user' => $request->user()
+        ]);
+    });
+});
